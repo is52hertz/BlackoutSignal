@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="340" viewBox="0 0 460 340"
+     font-family="-apple-system, 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f7cf6"/>
+      <stop offset="1" stop-color="#88a6ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#0b1b40" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <!-- desktop backdrop -->
+  <rect width="460" height="340" rx="16" fill="url(#bg)"/>
+
+  <!-- menu bar strip -->
+  <rect x="0" y="0" width="460" height="30" fill="#ffffff" opacity="0.18"/>
+  <!-- moon glyph in the menu bar -->
+  <g transform="translate(398,15)">
+    <path d="M2 -8 A8 8 0 1 0 2 8 A6.2 6.2 0 0 1 2 -8 Z" fill="#ffffff"/>
+    <circle cx="6.5" cy="-6" r="1.1" fill="#ffffff"/>
+    <circle cx="10" cy="-1.5" r="0.8" fill="#ffffff"/>
+  </g>
+  <text x="420" y="19" fill="#ffffff" font-size="12" opacity="0.92">12:00</text>
+
+  <!-- dropdown panel -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="40" width="380" height="270" rx="12" fill="#fbfbfd"/>
+  </g>
+
+  <!-- status -->
+  <text x="64" y="76" fill="#1d1d1f" font-size="15">状态：正常</text>
+  <line x1="60" y1="96" x2="400" y2="96" stroke="#e3e3e6" stroke-width="1"/>
+
+  <!-- highlighted primary action -->
+  <rect x="56" y="108" width="348" height="34" rx="7" fill="#0a66ff"/>
+  <text x="72" y="130" fill="#ffffff" font-size="15">进入黑屏模式</text>
+
+  <text x="72" y="162" fill="#8a8a8e" font-size="12">快捷键 ⌥⌘B ・ 黑屏后按 Esc 退出</text>
+  <line x1="60" y1="182" x2="400" y2="182" stroke="#e3e3e6" stroke-width="1"/>
+
+  <text x="72" y="214" fill="#1d1d1f" font-size="15">设置…</text>
+  <text x="72" y="248" fill="#1d1d1f" font-size="15">退出 BlackoutSignal</text>
+</svg>
