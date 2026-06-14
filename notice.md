@@ -23,6 +23,8 @@ Apple Silicon DDC/CI uses the private `IOAVService` API, which needs IORegistry 
 - Modeled on the proven `waydabber/m1ddc` approach: enumerate online displays, map each to its External `DCPAVServiceProxy` by matching the display's `IODisplayLocation` IORegistry path, then talk DDC over I2C. Chip `0x37`, data addr `0x51`, VCP `0x10` (luminance). Read = send "get VCP" request then read 12-byte reply (max at bytes 6–7, current at 8–9, big-endian). Write = `[0x84,0x03,0x10,hi,lo,checksum]`.
 - HARD RULE: only ever touch VCP `0x10`. Never send power/standby/sleep/input codes — they can drop the video signal and reproduce the "no input" screen.
 - A display is dimmed only if its current brightness was readable (so it can be restored); otherwise it relies on the overlay. Restore writes the exact recorded value, never a default.
+- HARDWARE CAVEAT (Mac mini): `IOAVService` DDC works over USB-C/Thunderbolt (DisplayPort Alt Mode) but NOT over the built-in HDMI port on several Apple Silicon Macs (per m1ddc). If the user's monitor is on HDMI and brightness doesn't reach 0, that's expected — the black overlay still applies; for true DDC dimming connect via USB-C/Thunderbolt.
+- Hot-plug during an active blackout: the overlay rebuilds to cover new displays (no crash, still black), but a newly attached display is NOT dimmed via DDC mid-session. Known v1 limitation.
 
 ## Crash recovery
 
