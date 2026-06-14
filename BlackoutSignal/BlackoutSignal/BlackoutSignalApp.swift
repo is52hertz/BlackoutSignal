@@ -2,16 +2,23 @@
 //  BlackoutSignalApp.swift
 //  BlackoutSignal
 //
-//  Created by is52hertz on 6/14/26.
-//
 
 import SwiftUI
 
 @main
 struct BlackoutSignalApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra {
+            MenuContentView(controller: appDelegate.controller)
+        } label: {
+            Image(systemName: appDelegate.controller.isActive ? "moon.fill" : "moon.stars")
+                .accessibilityLabel("BlackoutSignal")
+        }
+
+        Settings {
+            SettingsView(controller: appDelegate.controller)
         }
     }
 }

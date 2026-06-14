@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Xcode build artifacts
+build/
+DerivedData/
+*.profraw
+*.xcresult
+
+# Xcode per-user state (machine-specific)
+xcuserdata/
+*.xcuserstate
+*.xcuserstated
