@@ -24,6 +24,13 @@ struct SettingsView: View {
                 }
             }
 
+            Section("通用") {
+                Toggle("开机时自动启动", isOn: Binding(
+                    get: { controller.launchAtLoginEnabled },
+                    set: { controller.setLaunchAtLogin($0) }
+                ))
+            }
+
             Section("工作方式") {
                 Text("进入黑屏模式后，会通过 DDC/CI 将支持的外接显示器亮度降到 0，"
                      + "并在所有屏幕叠加纯黑覆盖；同时保持视频信号输出、阻止系统与显示器进入睡眠。"
@@ -37,7 +44,8 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 440, height: 360)
+        .frame(width: 440, height: 400)
+        .onAppear { controller.refreshLoginItemStatus() }
     }
 
     private var appVersion: String {

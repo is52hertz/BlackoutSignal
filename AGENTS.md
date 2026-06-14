@@ -9,7 +9,7 @@ BlackoutSignal is a single-user macOS menu-bar utility for Apple Silicon Macs (p
 
 ## Project Phase
 
-- **BlackoutSignal (app)**: Core v1 implemented — menu-bar app (`MenuBarExtra`, `.accessory`, no Dock icon), Carbon global hotkey ⌥⌘B, per-screen black overlay with Esc-to-exit + cursor hide, Apple Silicon DDC/CI brightness control (read/record → set 0 → restore) confined to `BSDisplayDDC` (Obj-C), IOKit power assertions, and crash-recovery persistence (`BrightnessStore`) with a launch-time restore prompt. Verified: `xcodebuild` Debug build + code sign succeed; `BrightnessStoreTests` pass; app smoke-launches without crashing. NOT yet verified on real hardware: live DDC dimming/restore, overlay appearance, and the global hotkey require the user's Mac mini + monitor (these black out the screen, so only the user can confirm).
+- **BlackoutSignal (app)**: Core v1 implemented — menu-bar app (`MenuBarExtra`, `.accessory`, no Dock icon), Carbon global hotkey ⌥⌘B, per-screen black overlay with Esc-to-exit + cursor hide, Apple Silicon DDC/CI brightness control (read/record → set 0 → restore) confined to `BSDisplayDDC` (Obj-C), IOKit power assertions, crash-recovery persistence (`BrightnessStore`) with a launch-time restore prompt, and a launch-at-login toggle (`SMAppService.mainApp`). Verified: `xcodebuild` Debug build + code sign succeed; `BrightnessStoreTests` pass; app smoke-launches without crashing. NOT yet verified on real hardware: live DDC dimming/restore, overlay appearance, and the global hotkey require the user's Mac mini + monitor (these black out the screen, so only the user can confirm).
 
 ## Development Rules
 
