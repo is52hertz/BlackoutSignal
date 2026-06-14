@@ -104,3 +104,7 @@ xcodebuild -scheme BlackoutSignal -configuration Release -destination 'generic/p
 ## 致谢 / Credits
 
 DDC/CI 实现参考了优秀的 [waydabber/m1ddc](https://github.com/waydabber/m1ddc)。/ The DDC/CI approach is informed by the excellent [m1ddc](https://github.com/waydabber/m1ddc).
+
+## 许可 / License
+
+[MIT](LICENSE) © 2026 Teethe
