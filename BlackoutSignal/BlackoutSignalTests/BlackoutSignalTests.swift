@@ -2,18 +2,45 @@
 //  BlackoutSignalTests.swift
 //  BlackoutSignalTests
 //
-//  Created by is52hertz on 6/14/26.
-//
 
+import Foundation
 import Testing
 @testable import BlackoutSignal
 
-struct BlackoutSignalTests {
+struct BrightnessStoreTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        // Swift Testing Documentation
-        // https://developer.apple.com/documentation/testing
+    private func makeTempStore() -> BrightnessStore {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("BlackoutSignalTests-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("session.json", isDirectory: false)
+        return BrightnessStore(fileURL: url)
     }
 
+    @Test func emptyStoreHasNoSession() {
+        let store = makeTempStore()
+        #expect(store.hasPendingSession == false)
+        #expect(store.load() == nil)
+    }
+
+    @Test func savesAndLoadsSession() throws {
+        let store = makeTempStore()
+        defer { store.clear() }
+
+        let session = BlackoutSession(brightness: ["1:2:3": 75, "uuid-abc": 40])
+        store.save(session)
+
+        #expect(store.hasPendingSession == true)
+        let loaded = try #require(store.load())
+        #expect(loaded.brightness == session.brightness)
+    }
+
+    @Test func clearRemovesSession() {
+        let store = makeTempStore()
+        store.save(BlackoutSession(brightness: ["a": 10]))
+        #expect(store.hasPendingSession == true)
+
+        store.clear()
+        #expect(store.hasPendingSession == false)
+        #expect(store.load() == nil)
+    }
 }
