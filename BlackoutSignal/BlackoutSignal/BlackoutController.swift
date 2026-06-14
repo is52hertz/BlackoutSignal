@@ -9,6 +9,7 @@
 
 import AppKit
 import Observation
+import ServiceManagement
 import os
 
 @MainActor
@@ -32,6 +33,9 @@ final class BlackoutController {
     /// A previous session that did not exit cleanly (set at launch). The UI offers to restore it.
     private(set) var pendingRecovery: BlackoutSession?
 
+    /// Whether the app is registered to launch at login (mirrors SMAppService's state).
+    private(set) var launchAtLoginEnabled = false
+
     private let overlay = OverlayManager()
     private let power = PowerAssertionManager()
     private let hotKey = HotKeyManager()
@@ -54,6 +58,7 @@ final class BlackoutController {
         hotKey.onActivate = { [weak self] in self?.toggle() }
         hotKeyConflict = !hotKey.register()
         pendingRecovery = store.load()
+        refreshLoginItemStatus()
     }
 
     func toggle() {
@@ -170,7 +175,56 @@ final class BlackoutController {
         pendingRecovery = nil
     }
 
+    // MARK: - Launch at login
+
+    /// Read the current login-item registration from the system (the source of truth).
+    func refreshLoginItemStatus() {
+        launchAtLoginEnabled = (SMAppService.mainApp.status == .enabled)
+    }
+
+    /// Register/unregister the app as a login item. Surfaces errors and the
+    /// "needs approval in System Settings" case.
+    func setLaunchAtLogin(_ enabled: Bool) {
+        do {
+            if enabled, SMAppService.mainApp.status != .enabled {
+                try SMAppService.mainApp.register()
+            } else if !enabled, SMAppService.mainApp.status == .enabled {
+                try SMAppService.mainApp.unregister()
+            }
+        } catch {
+            Self.log.error("Login item toggle failed: \(error.localizedDescription)")
+            presentLoginItemError(error)
+        }
+        refreshLoginItemStatus()
+        if enabled, SMAppService.mainApp.status == .requiresApproval {
+            presentLoginItemApprovalHint()
+        }
+    }
+
     // MARK: - Alerts
+
+    private func presentLoginItemError(_ error: Error) {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = "无法更改开机自启设置"
+        alert.informativeText = error.localizedDescription
+        alert.addButton(withTitle: "好")
+        NSApp.activate(ignoringOtherApps: true)
+        alert.runModal()
+    }
+
+    private func presentLoginItemApprovalHint() {
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = "需要在系统设置中允许开机自启"
+        alert.informativeText = "请在「系统设置 ▸ 通用 ▸ 登录项与扩展」中允许 BlackoutSignal。"
+        alert.addButton(withTitle: "打开系统设置")
+        alert.addButton(withTitle: "稍后")
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn {
+            SMAppService.openSystemSettingsLoginItems()
+        }
+    }
 
     private func presentRestoreFailure(displays: [String]) {
         let alert = NSAlert()
